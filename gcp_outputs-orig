@@ -1,0 +1,15 @@
+/*
+ * Terraform output variables for GCP.
+ */
+
+output "PAN-OS Mgmt IP" {
+    value = "${google_compute_instance.vm-series-xxyyzz.network_interface.0.access_config.0.nat_ip}"
+}
+
+output "PAN-OS Untrust IP" {
+    value = "${google_compute_instance.vm-series-xxyyzz.network_interface.1.access_config.0.nat_ip}"
+}
+
+output "Kali IP" {
+    value = "${google_compute_instance.kali-xxyyzz.network_interface.0.access_config.0.nat_ip}"
+}

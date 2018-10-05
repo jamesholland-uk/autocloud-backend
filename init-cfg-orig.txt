@@ -1,0 +1,14 @@
+type=dhcp-client
+ip-address=
+default-gateway=
+netmask=
+ipv6-address=
+ipv6-default-gateway=
+hostname=gcp-fw
+panorama-server=demomatic-rama-gcp.panw.co.uk
+panorama-server-2=
+tplname=gcp-auto-template-stack
+dgname=gcp-auto-dg
+dns-primary=
+dns-secondary=
+vm-auth-key=369584021057477

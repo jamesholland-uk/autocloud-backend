@@ -1,0 +1,452 @@
+/*
+ *  Provider - GCP
+ */
+ 
+provider "google" {
+  region = "${var.gcp_zone}"
+  credentials = "${file("${var.gcp_credentials_file}")}"
+  project = "${var.gcp_project_id}"
+}
+
+/*
+ *  Storage bucket
+ */
+
+#resource "google_storage_bucket" "bootstrap-bucket" {
+#  name     = "bootstrap-bucket-12345"
+#  location = "EU"
+#}
+
+/*
+ *  Bootstrap files
+ */
+
+#resource "google_storage_bucket_object" "init-cfg-txt" {
+#  name   = "config/init-cfg.txt"
+#  source = "init-cfg.txt"
+#  bucket = "bootstrap-bucket-12345"
+#  depends_on = ["google_storage_bucket.bootstrap-bucket"]
+#}
+
+#resource "google_storage_bucket_object" "bootstrap-xml" {
+#  name   = "config/bootstrap.xml"
+#  source = "bootstrap.xml"
+#  bucket = "bootstrap-bucket-12345"
+#  depends_on = ["google_storage_bucket.bootstrap-bucket"]
+#}
+
+#resource "google_storage_bucket_object" "content" {
+#  name   = "content/panupv2-all-contents-8067-5015"
+#  source = "panupv2-all-contents-8067-5015"
+#  bucket = "bootstrap-bucket-12345"
+#  depends_on = ["google_storage_bucket.bootstrap-bucket"]
+#}
+
+#resource "google_storage_bucket_object" "software" {
+#  name   = "software/temp"
+#  content = "."
+#  depends_on = ["google_storage_bucket.bootstrap-bucket"]
+#  bucket = "bootstrap-bucket-12345"
+#}
+
+#resource "google_storage_bucket_object" "license" {
+#  name   = "license/temp"
+#  content = "."
+#  bucket = "bootstrap-bucket-12345"
+#  depends_on = ["google_storage_bucket.bootstrap-bucket"]
+#}
+
+/*
+ *  Networks and subnetworks
+ */
+
+#resource "google_compute_network" "mgmt" {
+#    name                    = "mgmt"
+#    auto_create_subnetworks = false
+#  }
+resource "google_compute_subnetwork" "mgmt-net-xxyyzz" {
+  name          = "mgmt-net-xxyyzz"
+  ip_cidr_range = "192.168.xxyyzz.0/24"
+  region        = "${var.gcp_region}"
+  network       = "mgmt"
+  #depends_on = ["google_compute_network.mgmt"]
+}
+
+#resource "google_compute_network" "inside" {
+#    name                    = "inside"
+#    auto_create_subnetworks = false
+#  }
+resource "google_compute_subnetwork" "inside-net-xxyyzz" {
+  name          = "inside-net-xxyyzz"
+  ip_cidr_range = "10.xxyyzz.10.0/24"
+  region        = "${var.gcp_region}"
+  network       = "inside"
+  #depends_on = ["google_compute_network.inside"]
+}
+
+#resource "google_compute_network" "database" {
+#    name                    = "database"
+#    auto_create_subnetworks = false
+#  }
+resource "google_compute_subnetwork" "database-net-xxyyzz" {
+  name          = "database-net-xxyyzz"
+  ip_cidr_range = "10.xxyyzz.20.0/24"
+  region        = "${var.gcp_region}"
+  network       = "database"
+  #depends_on = ["google_compute_network.database"]
+}
+
+#resource "google_compute_network" "outside" {
+#    name                    = "outside"
+#    auto_create_subnetworks = false
+#  }
+
+resource "google_compute_subnetwork" "outside-net-xxyyzz" {
+  name          = "outside-net-xxyyzz"
+  ip_cidr_range = "172.16.xxyyzz.0/24"
+  region        = "${var.gcp_region}"
+  network       = "outside"
+  #depends_on = ["google_compute_network.outside"]
+}
+
+/*
+ *  GCP Routing
+ */
+ 
+resource "google_compute_route" "outside-route-to-inside-xxyyzz" {
+  name        = "outside-route-to-inside-xxyyzz"
+  dest_range  = "10.xxyyzz.10.0/24"
+  network     = "outside"
+  next_hop_ip = "172.16.xxyyzz.2"
+  priority    = 100
+  depends_on = ["google_compute_subnetwork.outside-net-xxyyzz"]
+}
+ 
+resource "google_compute_route" "inside-route-to-outside-xxyyzz" {
+  name        = "inside-route-to-outside-xxyyzz"
+  dest_range  = "172.16.xxyyzz.0/24"
+  network     = "inside"
+  next_hop_ip = "10.xxyyzz.10.2"
+  priority    = 100
+  depends_on = ["google_compute_subnetwork.inside-net-xxyyzz"]
+}
+
+resource "google_compute_route" "inside-route-to-database-xxyyzz" {
+  name        = "inside-route-to-database-xxyyzz"
+  dest_range  = "10.xxyyzz.20.0/24"
+  network     = "inside"
+  next_hop_ip = "10.xxyyzz.10.2"
+  priority    = 100
+  depends_on = ["google_compute_subnetwork.inside-net-xxyyzz"]
+}
+
+#resource "google_compute_route" "inside-route-to-real-internet-xxyyzz" {
+#  name        = "inside-route-to-real-internet-xxyyzz"
+#  dest_range  = "0.0.0.0/0"
+#  network     = "inside"
+#  next_hop_ip = "10.xxyyzz.10.2"
+#  priority    = 100
+#  depends_on = ["google_compute_subnetwork.inside-net-xxyyzz"]
+#}
+
+resource "google_compute_route" "database-route-to-inside-xxyyzz" {
+  name        = "database-route-to-inside-xxyyzz"
+  dest_range  = "10.xxyyzz.10.0/24"
+  network     = "database"
+  next_hop_ip = "10.xxyyzz.20.2"
+  priority    = 100
+  depends_on = ["google_compute_subnetwork.database-net-xxyyzz"]
+}
+
+/*
+ *  Public IP addresses
+ */
+
+#resource "google_compute_address" "mgmt-pip-xxyyzz" {
+#  name = "mgmt-pip-xxyyzz"
+#  address_type = "EXTERNAL"
+#  region = "${var.gcp_region}"
+#}
+
+#resource "google_compute_address" "outside-pip-xxyyzz" {
+#  name = "outside-pip-xxyyzz"
+#  address_type = "EXTERNAL"
+#  region = "${var.gcp_region}"
+#}
+
+/*
+ *  PAN-OS Next-generation Firewall
+ */
+
+resource "google_compute_instance" "vm-series-xxyyzz" {
+    count = 1
+    name = "VM-FW1-xxyyzz"
+    machine_type = "n1-standard-4"
+    zone = "${var.gcp_zone}"
+    can_ip_forward = true
+    allow_stopping_for_update = true
+    metadata {
+        serial-port-enable = true
+        ssh-keys = "admin:${file("${var.gcp_ssh_key}")}"
+        vmseries-bootstrap-gce-storagebucket = "bootstrap-bucket"
+    }
+    service_account {
+        scopes = [
+            "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
+            "https://www.googleapis.com/auth/devstorage.read_only",
+            "https://www.googleapis.com/auth/logging.write",
+            "https://www.googleapis.com/auth/monitoring.write",
+        ]
+    }
+    network_interface {
+        subnetwork = "mgmt-net-xxyyzz"
+        address = "192.168.xxyyzz.2"
+        access_config {
+            // Ephemeral public IP
+        }
+    }
+
+    network_interface {
+        subnetwork = "outside-net-xxyyzz"
+        address = "172.16.xxyyzz.2"
+        access_config {
+            // Ephemeral public IP
+        }
+    }
+  
+    network_interface {
+        address = "10.xxyyzz.10.2"
+        subnetwork = "inside-net-xxyyzz"
+    }
+
+    network_interface {
+        address = "10.xxyyzz.20.2"
+        subnetwork = "database-net-xxyyzz"
+    }
+
+    boot_disk {
+        initialize_params {
+            image = "https://www.googleapis.com/compute/v1/projects/paloaltonetworksgcp-public/global/images/vmseries-bundle2-810"
+        }
+    }
+    depends_on = ["google_compute_subnetwork.mgmt-net-xxyyzz", "google_compute_subnetwork.inside-net-xxyyzz", "google_compute_subnetwork.outside-net-xxyyzz", "google_compute_subnetwork.database-net-xxyyzz"]
+}
+
+/*
+ *  Linux Web Server Victim
+ */
+
+resource "google_compute_instance" "linux-xxyyzz" {
+  name         = "LIN-VM1-xxyyzz"
+  machine_type = "n1-standard-1"
+  zone         = "${var.gcp_zone}"
+
+  boot_disk {
+    initialize_params {
+      image = "ubuntu-os-cloud/ubuntu-1404-trusty-v20180818"
+    }
+  }
+
+  network_interface {
+    subnetwork = "inside-net-xxyyzz"
+    address = "10.xxyyzz.10.101"
+    
+    access_config {
+      // Ephemeral public IP
+    }
+  }
+
+  metadata {
+    serial-port-enable = true
+    ssh-keys = "admin:${file("${var.gcp_ssh_key}")}"
+  }
+    
+  metadata_startup_script = "wget https://raw.githubusercontent.com/jamesholland-uk/auto-hack-cloud/master/linuxserver-startup.sh \n chmod 755 linuxserver-startup.sh \n ./linuxserver-startup.sh"
+
+  labels = {"type" = "web"}
+
+  service_account {
+    scopes = ["userinfo-email", "compute-ro", "storage-ro"]
+  }
+
+  depends_on = ["google_compute_subnetwork.inside-net-xxyyzz"]
+}
+
+/*
+ *  Kali attacker
+ */
+
+resource "google_compute_instance" "kali-xxyyzz" {
+  name         = "KALI-VM1-xxyyzz"
+  machine_type = "n1-standard-1"
+  zone         = "${var.gcp_zone}"
+
+  boot_disk {
+    initialize_params {
+      image = "centos-cloud/centos-7-v20180815"
+    }
+  }
+
+  network_interface {
+    subnetwork = "outside-net-xxyyzz"
+    address = "172.16.xxyyzz.10"
+
+    access_config {
+      // Ephemeral public IP
+    }
+  }
+
+  metadata {
+    serial-port-enable = true
+    ssh-keys = "admin:${file("${var.gcp_ssh_key}")}"
+  }
+  
+  metadata_startup_script = "curl https://raw.githubusercontent.com/jamesholland-uk/auto-hack-cloud/master/kali-startup.sh > kali-startup.sh \n chmod 755 kali-startup.sh \n ./kali-startup.sh xxyyzz"
+
+  service_account {
+    scopes = ["userinfo-email", "compute-ro", "storage-ro"]
+  }
+
+  depends_on = ["google_compute_subnetwork.outside-net-xxyyzz"]
+}
+
+
+/*
+ *  Database
+ */
+
+resource "google_compute_instance" "db-xxyyzz" {
+  name         = "DB-VM1-xxyyzz"
+  machine_type = "n1-standard-1"
+  zone         = "${var.gcp_zone}"
+
+  boot_disk {
+    initialize_params {
+      image = "ubuntu-os-cloud/ubuntu-1404-trusty-v20180818"
+    }
+  }
+
+  network_interface {
+    subnetwork = "database-net-xxyyzz"
+    address = "10.xxyyzz.20.50"
+
+    access_config {
+      // Ephemeral public IP
+    }
+  }
+
+  metadata {
+    serial-port-enable = true
+    ssh-keys = "admin:${file("${var.gcp_ssh_key}")}"
+  }
+  
+  metadata_startup_script = "wget https://raw.githubusercontent.com/jamesholland-uk/auto-hack-cloud/master/linuxserver-startup.sh \n chmod 755 linuxserver-startup.sh \n ./linuxserver-startup.sh"
+
+  labels = {"type" = "database"}
+
+  service_account {
+    scopes = ["userinfo-email", "compute-ro", "storage-ro"]
+  }
+
+  depends_on = ["google_compute_subnetwork.database-net-xxyyzz"]
+}
+
+
+
+ /*
+ *  GCP Firewall Rules
+ */
+
+#resource "google_compute_firewall" "internet-ingress-for-mgt-xxyyzz" {
+#    name = "internet-ingress-for-mgt-xxyyzz"
+#    network = "mgmt"
+#    allow {
+#        protocol = "tcp"
+#        ports = ["22", "443"]
+#    }
+#    source_ranges = ["0.0.0.0/0"]
+#    #depends_on = ["google_compute_network.mgmt"]
+#}
+
+#resource "google_compute_firewall" "internet-ingress-for-db-xxyyzz" {
+#    name = "internet-ingress-for-db-xxyyzz"
+#    network = "database"
+#    allow {
+#        protocol = "tcp"
+#        ports = ["22", "443"]
+#    }
+#    source_ranges = ["0.0.0.0/0"]
+#    #depends_on = ["google_compute_network.database"]
+#}
+
+#resource "google_compute_firewall" "internet-ingress-for-outside-xxyyzz" {
+#    name = "internet-ingress-for-outside-xxyyzz"
+#    network = "outside"
+#    allow = [ 
+#        {
+#          protocol = "tcp"
+#          ports = ["22", "80", "443", "3389", "4200", "8080"]
+#        },
+#        {
+#          protocol = "udp"
+#          ports = ["4501"]
+#        }
+#    ]
+#    source_ranges = ["0.0.0.0/0"]
+#    #depends_on = ["google_compute_network.outside"]
+#}
+
+#resource "google_compute_firewall" "internet-ingress-for-inside-xxyyzz" {
+#    name = "internet-ingress-for-inside-xxyyzz"
+#    network = "inside"
+#    allow {
+#        protocol = "tcp"
+#        ports = ["22", "80", "443", "3389", "8080"]
+#    }
+#    source_ranges = ["0.0.0.0/0"]
+#    #depends_on = ["google_compute_network.inside"]
+#}
+
+#resource "google_compute_firewall" "outside-to-inside-xxyyzz" {
+#    name = "outside-to-inside-xxyyzz"
+#    network = "inside"
+#    allow {
+#        protocol = "all"
+#        // Any port
+#    }
+#    source_ranges = ["10.xxyyzz.10.0/24", "172.16.xxyyzz.0/24"]
+#    #depends_on = ["google_compute_network.inside"]
+#}
+
+#resource "google_compute_firewall" "inside-to-db-xxyyzz" {
+#    name = "inside-to-db-xxyyzz"
+#    network = "database"
+#    allow {
+#        protocol = "all"
+#        // Any port
+#    }
+#    source_ranges = ["10.xxyyzz.10.0/24", "10.xxyyzz.20.0/24"]
+#    #depends_on = ["google_compute_network.database"]
+#}
+
+#resource "google_compute_firewall" "inside-to-outside-xxyyzz" {
+#    name = "inside-to-outside-xxyyzz"
+#    network = "outside"
+#    allow {
+#        protocol = "all"
+#        // Any port
+#    }
+#    source_ranges = ["10.xxyyzz.10.0/24", "172.16.xxyyzz.0/24"]
+#    #depends_on = ["google_compute_network.outside"]
+#}
+
+#resource "google_compute_firewall" "db-to-inside-xxyyzz" {
+#    name = "db-to-inside-xxyyzz"
+#    network = "inside"
+#    allow {
+#        protocol = "all"
+#        // Any port
+#    }
+#    source_ranges = ["10.xxyyzz.10.0/24", "10.xxyyzz.20.0/24"]
+#    #depends_on = ["google_compute_network.inside"]
+#}
