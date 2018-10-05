@@ -25,7 +25,6 @@ uid=$1
 
 if [ "$uid" != "" ]
 	then
-	
 	# There are jobs ready!
 	echo "Job(s) ready" >> $logfile
 
