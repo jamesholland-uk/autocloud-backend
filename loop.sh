@@ -7,7 +7,7 @@
 logfile="deploy-log.txt"
 
 # Does what it says on the tin
-source creds.txt
+source /home/jholland/autocloud-backend/creds.txt
 
 # Cron runs every minute, so do this process 28 times, with a 2 second pause, to cover just under a minute of execution
 for number in {1..28}
@@ -180,9 +180,6 @@ if [ "$uid" != "" ]
 	serial=$(sed -ne '/serial/{s/.*<serial>\(.*\)<\/serial>.*/\1/p;q;}' <<< "$sysinfo")	
 	echo "fw-api-key: ${fwkey}" >> $logfile
 	echo "fw-serial: ${serial}" >> $logfile
-	
-	# Let things settle down
-	sleep 30s
 
 	# Stop the clock
 	finish=$(date)
