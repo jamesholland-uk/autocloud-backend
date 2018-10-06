@@ -10,7 +10,7 @@ cd autocloud-backend
 logfile="deploy-log.txt"
 
 # Does what it says on the tin
-source /home/jholland/autocloud-backend/creds.txt
+source creds.txt
 
 # Cron runs every minute, so do this process 28 times, with a 2 second pause, to cover just under a minute of execution
 for number in {1..28}
