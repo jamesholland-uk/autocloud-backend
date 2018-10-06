@@ -120,8 +120,8 @@ if [ "$uid" != "" ]
 	whoami >> $logfile
 	pwd >> $logfile
 	echo $PATH >> $logfile
-	terraform init >> ../$logfile
-	terraform apply --auto-approve >> ../$logfile
+	/usr/local/bin/terraform init >> ../$logfile
+	/usr/local/bin/terraform apply --auto-approve >> ../$logfile
 	cd ..
 	deployed=$(date)
 	
