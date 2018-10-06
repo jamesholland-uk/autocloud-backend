@@ -117,6 +117,9 @@ if [ "$uid" != "" ]
 	mkdir $uid
 	cp *.tf $uid/
 	cd $uid
+	whoami >> $logfile
+	pwd >> $logfile
+	echo $PATH >> $logfile
 	terraform init >> ../$logfile
 	terraform apply --auto-approve >> ../$logfile
 	cd ..
