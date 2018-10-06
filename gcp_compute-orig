@@ -261,7 +261,7 @@ resource "google_compute_instance" "linux-xxyyzz" {
     ssh-keys = "admin:${file("${var.gcp_ssh_key}")}"
   }
     
-  metadata_startup_script = "wget https://raw.githubusercontent.com/jamesholland-uk/auto-hack-cloud/master/linuxserver-startup.sh \n chmod 755 linuxserver-startup.sh \n ./linuxserver-startup.sh"
+  metadata_startup_script = "wget https://raw.githubusercontent.com/jamesholland-uk/auto-hack-cloud/master/linuxserver-startup.sh \n chmod 755 linuxserver-startup.sh \n ./linuxserver-startup.sh xxyyzz"
 
   labels = {"type" = "web"}
 
@@ -340,7 +340,7 @@ resource "google_compute_instance" "db-xxyyzz" {
     ssh-keys = "admin:${file("${var.gcp_ssh_key}")}"
   }
   
-  metadata_startup_script = "wget https://raw.githubusercontent.com/jamesholland-uk/auto-hack-cloud/master/databse-startup.sh \n chmod 755 database-startup.sh \n ./database-startup.sh"
+  metadata_startup_script = "wget https://raw.githubusercontent.com/jamesholland-uk/auto-hack-cloud/master/databse-startup.sh \n chmod 755 database-startup.sh \n ./database-startup.sh xxyyzz"
 
   labels = {"type" = "database"}
 
