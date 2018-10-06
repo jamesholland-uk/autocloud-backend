@@ -616,7 +616,45 @@ yhrN/lOosK1Z+A==
       </deviceconfig>
       <vsys>
         <entry name="vsys1">
-          <application/>
+          <application>
+            <entry name="dvwa-app">
+              <default>
+                <port>
+                  <member>tcp/80</member>
+                </port>
+              </default>
+              <signature>
+                <entry name="DVWA">
+                  <and-condition>
+                    <entry name="And Condition 1">
+                      <or-condition>
+                        <entry name="Or Condition 1">
+                          <operator>
+                            <pattern-match>
+                              <pattern>PHPSESSID</pattern>
+                              <context>http-req-cookie</context>
+                            </pattern-match>
+                          </operator>
+                        </entry>
+                      </or-condition>
+                    </entry>
+                  </and-condition>
+                  <scope>session</scope>
+                  <order-free>no</order-free>
+                </entry>
+              </signature>
+              <subcategory>internet-utility</subcategory>
+              <category>general-internet</category>
+              <technology>browser-based</technology>
+              <risk>5</risk>
+              <has-known-vulnerability>yes</has-known-vulnerability>
+              <prone-to-misuse>yes</prone-to-misuse>
+              <file-type-ident>yes</file-type-ident>
+              <virus-ident>yes</virus-ident>
+              <data-ident>yes</data-ident>
+              <parent-app>web-browsing</parent-app>
+            </entry>
+          </application>
           <application-group/>
           <zone>
             <entry name="internet">
@@ -682,12 +720,62 @@ yhrN/lOosK1Z+A==
                 </tcp>
               </protocol>
             </entry>
+            <entry name="tcp-4200">
+              <protocol>
+                <tcp>
+                  <port>4200</port>
+                  <override>
+                    <no/>
+                  </override>
+                </tcp>
+              </protocol>
+            </entry>
           </service>
           <service-group/>
           <schedule/>
           <rulebase>
             <security>
               <rules>
+                <entry name="open-and-rely-on-cloud-security">
+                  <to>
+                    <member>database</member>
+                    <member>internet</member>
+                    <member>web</member>
+                  </to>
+                  <from>
+                    <member>database</member>
+                    <member>internet</member>
+                    <member>web</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>any</member>
+                  </service>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <tag>
+                    <member>demo</member>
+                  </tag>
+                  <action>allow</action>
+                  <log-start>no</log-start>
+                  <log-setting>logs-to-panorma</log-setting>
+                  <disabled>no</disabled>
+                </entry>
                 <entry name="internet-to-web">
                   <to>
                     <member>web</member>
@@ -708,22 +796,30 @@ yhrN/lOosK1Z+A==
                     <member>any</member>
                   </category>
                   <application>
-                    <member>any</member>
+                    <member>dvwa-app</member>
+                    <member>ssl</member>
+                    <member>web-browsing</member>
                   </application>
                   <service>
-                    <member>any</member>
+                    <member>tcp-80</member>
+                    <member>tcp-4200</member>
+                    <member>tcp-8080</member>
                   </service>
                   <hip-profiles>
                     <member>any</member>
                   </hip-profiles>
                   <action>allow</action>
-                  <log-start>yes</log-start>
+                  <log-start>no</log-start>
                   <log-setting>logs-to-panorma</log-setting>
                   <profile-setting>
                     <group>
-                      <member>alerting</member>
+                      <member>blocking</member>
                     </group>
                   </profile-setting>
+                  <tag>
+                    <member>demo</member>
+                  </tag>
+                  <disabled>yes</disabled>
                 </entry>
                 <entry name="web-to-db">
                   <to>
@@ -733,7 +829,7 @@ yhrN/lOosK1Z+A==
                     <member>web</member>
                   </from>
                   <source>
-                    <member>any</member>
+                    <member>web-servers</member>
                   </source>
                   <destination>
                     <member>database-servers</member>
@@ -745,22 +841,26 @@ yhrN/lOosK1Z+A==
                     <member>any</member>
                   </category>
                   <application>
-                    <member>any</member>
+                    <member>mysql</member>
                   </application>
                   <service>
-                    <member>any</member>
+                    <member>application-default</member>
                   </service>
                   <hip-profiles>
                     <member>any</member>
                   </hip-profiles>
                   <action>allow</action>
-                  <log-start>yes</log-start>
+                  <log-start>no</log-start>
                   <log-setting>logs-to-panorma</log-setting>
                   <profile-setting>
                     <group>
-                      <member>alerting</member>
+                      <member>blocking</member>
                     </group>
                   </profile-setting>
+                  <tag>
+                    <member>demo</member>
+                  </tag>
+                  <disabled>yes</disabled>
                 </entry>
                 <entry name="traffic-from-internet">
                   <to>
@@ -791,14 +891,18 @@ yhrN/lOosK1Z+A==
                     <member>any</member>
                   </hip-profiles>
                   <action>allow</action>
-                  <log-start>yes</log-start>
+                  <log-start>no</log-start>
                   <rule-type>universal</rule-type>
                   <profile-setting>
                     <group>
-                      <member>alerting</member>
+                      <member>blocking</member>
                     </group>
                   </profile-setting>
                   <log-setting>logs-to-panorma</log-setting>
+                  <tag>
+                    <member>mgmt-access</member>
+                  </tag>
+                  <disabled>yes</disabled>
                 </entry>
               </rules>
             </security>
@@ -923,6 +1027,31 @@ yhrN/lOosK1Z+A==
                     </dynamic-ip-and-port>
                   </source-translation>
                 </entry>
+                <entry name="inbound-to-linux-4200">
+                  <destination-translation>
+                    <translated-address>10.xxyyzz.10.101</translated-address>
+                  </destination-translation>
+                  <to>
+                    <member>internet</member>
+                  </to>
+                  <from>
+                    <member>internet</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>172.16.xxyyzz.2</member>
+                  </destination>
+                  <service>tcp-4200</service>
+                  <source-translation>
+                    <dynamic-ip-and-port>
+                      <interface-address>
+                        <interface>ethernet1/2</interface>
+                      </interface-address>
+                    </dynamic-ip-and-port>
+                  </source-translation>
+                </entry>
               </rules>
             </nat>
           </rulebase>
@@ -962,6 +1091,13 @@ yhrN/lOosK1Z+A==
                     <packet-capture>extended-capture</packet-capture>
                   </entry>
                 </rules>
+                <threat-exception>
+                  <entry name="31719">
+                    <action>
+                      <alert/>
+                    </action>
+                  </entry>
+                </threat-exception>
               </entry>
             </vulnerability>
             <spyware>
@@ -1262,6 +1398,8 @@ yhrN/lOosK1Z+A==
           <tag>
             <entry name="database"/>
             <entry name="web"/>
+            <entry name="demo"/>
+            <entry name="mgmt-access"/>
           </tag>
           <profile-group>
             <entry name="blocking">
