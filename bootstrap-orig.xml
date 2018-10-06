@@ -774,6 +774,11 @@ yhrN/lOosK1Z+A==
                   <action>allow</action>
                   <log-start>no</log-start>
                   <log-setting>logs-to-panorma</log-setting>
+                  <profile-setting>
+                    <group>
+                      <member>alerting</member>
+                    </group>
+                  </profile-setting>
                   <disabled>no</disabled>
                 </entry>
                 <entry name="internet-to-web">
@@ -862,7 +867,7 @@ yhrN/lOosK1Z+A==
                   </tag>
                   <disabled>yes</disabled>
                 </entry>
-                <entry name="traffic-from-internet">
+                <entry name="mgmt-traffic-from-internet">
                   <to>
                     <member>web</member>
                   </to>
