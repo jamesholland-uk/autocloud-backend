@@ -3,6 +3,9 @@
 # Capture all CLI output
 #exec &> deploy-log.txt
 
+# Move to the right place!
+cd autocloud-backend
+
 # Initiate log file
 logfile="deploy-log.txt"
 
