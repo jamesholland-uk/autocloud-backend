@@ -79,10 +79,9 @@ if [ "$uid" != "" ]
 
 	#read -n1 -r -p "Press any key to continue..." key
 
-    # Send  & email
+    # Send SMS
 	curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, starting your deployment now..." -d key=$SMS >> $logfile
-	curl -s --user 'api:'"$MAILGUN"'' https://api.mailgun.net/v3/demo.panw.co.uk/messages -F from='Palo Alto Networks <demo@demo.panw.co.uk>' -F to=jholland@paloaltonetworks.com -F subject='GCP HackLab Cloud Automation Demo Used by Someone!!!' -F html=' '"$message_txt"' '
-
+	
 	#read -n1 -r -p "Press any key to continue..." key
 
 	# Copy source bootstrap file to working file
@@ -201,12 +200,11 @@ if [ "$uid" != "" ]
 	# Send SMS
     curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, your deployment is done. Here's your firewall: $url Login with username user and password '"$USERPASS"'" -d key=$SMS >> $logfile
 	
-	# Send emails
+	# Send email
+	# GCP does not allow SMTP outbound on tcp/25, so using API-based email delivery
 	message_txt=$'Hi '"$nickname"',  Thanks for using the cloud automation demo. Your firewall was deployed to '"$url"' Login with username user and password '"$USERPASS"'     Kind regards, Palo Alto Networks      (Please contact '"$se"' for more information)'
-	#mail -a "From: Palo Alto Networks <infosec@panw.co.uk>" -s "Cloud Automation Demo - Palo Alto Networks" $email <<< $message_txt
-	#mail -a "From: Palo Alto Networks <infosec@panw.co.uk>" -s "Cloud Automation Demo Used by Someone!!!" "jholland@paloaltonetworks.com" <<< $message_txt
-	# GCP does not allow SMTP outboudn on tcp/25, so using API-based email delivery
 	curl -s --user 'api:'"$MAILGUN"'' https://api.mailgun.net/v3/demo.panw.co.uk/messages -F from='Palo Alto Networks <demo@demo.panw.co.uk>' -F to=$email -F subject='Cloud Automation Demo - Palo Alto Networks' -F html=' '"$message_txt"' '
+	curl -s --user 'api:'"$MAILGUN"'' https://api.mailgun.net/v3/demo.panw.co.uk/messages -F from='Palo Alto Networks <demo@demo.panw.co.uk>' -F to=jholland@paloaltonetworks.com -F subject='GCP HackLab Cloud Automation Demo Used by Someone!!!' -F html=' '"$message_txt"' '
 	
 	# Timers
     ldone=$(date +%s)
