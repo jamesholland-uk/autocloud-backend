@@ -161,16 +161,8 @@ if [ "$uid" != "" ]
 		sleep 5s
 	done
 
-	# Using BYOL means adding a licence auth code to the bootstrap folder, which incurs a reboot, so add wait time for this, and re-do the check for the firewall to be up
-	sleep 120s
-	while [ `curl --write-out "%{http_code}\n" -m 2 -k --silent --output /dev/null $url` -eq 000 ]
-	do
-		echo "Waiting for firewall mgmt GUI page to be up again after reboot incurred when applying auth code..."
-		sleep 5s
-	done
-
 	#read -n1 -r -p "Press any key to continue..." key
-	
+
 	# Timers
     lboot=$(date +%s)
     boottime=$((lboot - ldeployed))
@@ -181,7 +173,15 @@ if [ "$uid" != "" ]
 	# Set job to configuring
 	$(mysql -u dbuser -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Configuring' WHERE JOB = '$uid';")
 	$(mysql -u dbuser -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET BOOTTIME = '$bootdesc' WHERE JOB = '$uid';")
-	
+
+	# Using BYOL means adding a licence auth code to the bootstrap folder, which incurs a reboot, so add wait time for this, and re-do the check for the firewall to be up
+	sleep 120s
+	while [ `curl --write-out "%{http_code}\n" -m 2 -k --silent --output /dev/null $url` -eq 000 ]
+	do
+		echo "Waiting for firewall mgmt GUI page to be up again after reboot incurred when applying auth code..."
+		sleep 5s
+	done
+
 	#read -n1 -r -p "Press any key to continue..." key
 	
 	# Get new firewall's XML key
