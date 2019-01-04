@@ -200,7 +200,7 @@ resource "google_compute_instance" "vm-series-xxyyzz" {
     }
     network_interface {
         subnetwork = "mgmt-net-xxyyzz"
-        address = "192.168.xxyyzz.2"
+        network_ip = "192.168.xxyyzz.2"
         access_config {
             // Ephemeral public IP
         }
@@ -208,19 +208,19 @@ resource "google_compute_instance" "vm-series-xxyyzz" {
 
     network_interface {
         subnetwork = "outside-net-xxyyzz"
-        address = "172.16.xxyyzz.2"
+        network_ip = "172.16.xxyyzz.2"
         access_config {
             // Ephemeral public IP
         }
     }
   
     network_interface {
-        address = "10.xxyyzz.10.2"
+        network_ip = "10.xxyyzz.10.2"
         subnetwork = "inside-net-xxyyzz"
     }
 
     network_interface {
-        address = "10.xxyyzz.20.2"
+        network_ip = "10.xxyyzz.20.2"
         subnetwork = "database-net-xxyyzz"
     }
 
@@ -250,7 +250,7 @@ resource "google_compute_instance" "linux-xxyyzz" {
 
   network_interface {
     subnetwork = "inside-net-xxyyzz"
-    address = "10.xxyyzz.10.101"
+    network_ip = "10.xxyyzz.10.101"
     
     access_config {
       // Ephemeral public IP
@@ -290,7 +290,7 @@ resource "google_compute_instance" "kali-xxyyzz" {
 
   network_interface {
     subnetwork = "outside-net-xxyyzz"
-    address = "172.16.xxyyzz.10"
+    network_ip = "172.16.xxyyzz.10"
 
     access_config {
       // Ephemeral public IP
@@ -329,7 +329,7 @@ resource "google_compute_instance" "db-xxyyzz" {
 
   network_interface {
     subnetwork = "database-net-xxyyzz"
-    address = "10.xxyyzz.20.50"
+    network_ip = "10.xxyyzz.20.50"
 
     access_config {
       // Ephemeral public IP
