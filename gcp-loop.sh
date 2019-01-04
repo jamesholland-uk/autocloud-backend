@@ -104,6 +104,10 @@ if [ "$uid" != "" ]
 	sed -i "s/xxyyzz/$subnet/g" gcp_compute.tf >> $logfile
 	sed -i "s/xxyyzz/$subnet/g" gcp_outputs.tf >> $logfile
 
+	# Auth to GCP, set runtime variables
+	gcloud auth activate-service-account --key-file=../gcp_compute_key_svc_auto-hack-cloud.json
+	gcloud config set project auto-hack-cloud
+
 	# Upload bootstrap.xml and init-gfc bootstrap files - will overwrite already present file(s)
 	gsutil cp bootstrap.xml gs://bootstrap-bucket/config/
 	gsutil cp init-cfg.txt gs://bootstrap-bucket/config/
@@ -133,7 +137,7 @@ if [ "$uid" != "" ]
 	deploytimedesc="$deployminutes minutes and $deployseconds seconds"
 
 	# Set job to bootstrapping
-    $(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Bootstrapping' WHERE JOB = '$uid';")
+    	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Bootstrapping' WHERE JOB = '$uid';")
 	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET DEPLOYTIME = '$deploytimedesc' WHERE JOB = '$uid';")
 
 	# Find the public mgmt IP after deployment, and create a URL to test if the VM-Series is up yet
@@ -164,11 +168,11 @@ if [ "$uid" != "" ]
 	#read -n1 -r -p "Press any key to continue..." key
 
 	# Timers
-    lboot=$(date +%s)
-    boottime=$((lboot - ldeployed))
-    bootminutes=$((boottime / 60))
-    bootseconds=$((boottime % 60))
-    bootdesc="$bootminutes minutes and $bootseconds seconds"
+    	lboot=$(date +%s)
+    	boottime=$((lboot - ldeployed))
+    	bootminutes=$((boottime / 60))
+    	bootseconds=$((boottime % 60))
+    	bootdesc="$bootminutes minutes and $bootseconds seconds"
 
 	# Set job to configuring
 	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Configuring' WHERE JOB = '$uid';")
@@ -214,12 +218,12 @@ if [ "$uid" != "" ]
 	curl -s --user 'api:'"$MAILGUN"'' https://api.mailgun.net/v3/demo.panw.co.uk/messages -F from='Palo Alto Networks <demo@demo.panw.co.uk>' -F to=jholland@paloaltonetworks.com -F subject='GCP HackLab Cloud Automation Demo Used by Someone!!!' -F html=' '"$message_txt"' '
 	
 	# Timers
-    ldone=$(date +%s)
-    donetime=$((ldone - lboot))
-    doneminutes=$((donetime / 60))
-    doneseconds=$((donetime % 60))
-    if [ "$doneminutes" == "" ]
-    then
+    	ldone=$(date +%s)
+    	donetime=$((ldone - lboot))
+    	doneminutes=$((donetime / 60))
+    	doneseconds=$((donetime % 60))
+    	if [ "$doneminutes" == "" ]
+    	then
 		donedesc="$doneseconds seconds"
 	else
 		donedesc="$doneminutes minutes and $doneseconds seconds"	
@@ -227,9 +231,9 @@ if [ "$uid" != "" ]
 	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET DONETIME = '$donedesc' WHERE JOB = '$uid';")
 
 	totaltime=$((ldone - lstart))
-    totalminutes=$((totaltime / 60))
-    totalseconds=$((totaltime % 60))
-    totaldesc="$totalminutes minutes and $totalseconds seconds"
+    	totalminutes=$((totaltime / 60))
+    	totalseconds=$((totaltime % 60))
+    	totaldesc="$totalminutes minutes and $totalseconds seconds"
 	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET TOTALTIME = '$totaldesc' WHERE JOB = '$uid';")
 
 	# Set job to done
