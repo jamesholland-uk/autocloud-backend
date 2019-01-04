@@ -39,7 +39,7 @@ if [ "$uid" != "" ]
 	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Deploying' WHERE JOB = '$uid';")
 
 	# Get job attributes
-	resgrp=$(mysql -N -u db$DBUSERuser -p$OURPASS -D auto-hack-cloud -e "SELECT RESGRP FROM jobs WHERE JOB = '$uid';") >> $logfile
+	resgrp=$(mysql -N -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "SELECT RESGRP FROM jobs WHERE JOB = '$uid';") >> $logfile
 	message=$(mysql -N -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "SELECT MESSAGE FROM jobs WHERE JOB = '$uid';") >> $logfile
 	phone=$(mysql -N -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "SELECT PHONE FROM jobs WHERE JOB = '$uid';") >> $logfile
 	email=$(mysql -N -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "SELECT EMAIL FROM jobs WHERE JOB = '$uid';") >> $logfile
