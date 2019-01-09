@@ -34,7 +34,15 @@ for vm in `printf "$INSTANCES" | grep RUNNING | grep "created-by=demo" | awk '{p
 done
 
 
-# Deregister firewalls
+# Cycle through all NON-FIREWALL terminated instances... (these were shutdown manually, or automatically shut down 24 hours prior, by the first for-loop)
+for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep -E "kali-|linux-|db-" | awk '{print $1}'`; do
+	printf "\nGoing to delete $vm\n" >> $logfile
+	# ...and delete them
+	gcloud -q compute instances delete $vm
+done
+
+
+# Cycle through all FIREWALL terminated instances... (these were shutdown manually, or automatically shut down 24 hours prior, by the first for-loop)
 for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep fw- | awk '{print $1}'`; do
 	printf "\n\nGoing to deregister $vm\n" >> $logfile
 	
@@ -97,15 +105,6 @@ for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep
 		curl -s --user 'api:'"$MAILGUN"'' https://api.mailgun.net/v3/demo.panw.co.uk/messages -F from='Palo Alto Networks <demo@demo.panw.co.uk>' -F to=$EMAILADDRESS -F subject='AUTOCLOUD' -F html=' '"$MSG"' '
 	fi
 done
-
-
-# Cycle through all NON-FIREWALL terminated instances... (these were shutdown manually, or automatically shut down 24 hours prior, by the above for-loop)
-for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep -E "kali-|linux-|db-" | awk '{print $1}'`; do
-	printf "\nGoing to delete $vm\n" >> $logfile
-	# ...and delete them
-	gcloud -q compute instances delete $vm
-done
-
 
 
 # Get updated list of instances
