@@ -98,3 +98,7 @@ INSTANCES=`gcloud compute instances list --format='table(name,zone,networkInterf
 printf "\nUpdated list of instances:\n" >> $logfile
 printf "$INSTANCES" >> $logfile
 printf "\n\n\n\n" >> $logfile
+
+
+# Wrap up
+printf "\n\n*** Finished clearing up at `date` ***\n\n" >> $logfile
