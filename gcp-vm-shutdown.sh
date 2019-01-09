@@ -13,6 +13,7 @@ printf "\n\n\n\n\n\n*** Clearing up GCP Running Instances on `date` ***\n\n" >> 
 
 # Ensure we're in the right place in GCP
 gcloud config set project auto-hack-cloud
+gcloud config set compute/region europe-west2
 gcloud config set compute/zone europe-west2-b
 
 
@@ -87,7 +88,7 @@ for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep
 		routes=$(gcloud -q compute routes list | grep $uid | grep route-to | awk '{print $1}')
 		# Then delete each route...
 		printf "\nGoing to delete $routes\n" >> $logfile
-		deleteroutes=`gcloud -q compute routes delete $routes`
+		deleteroutes=`gcloud -q compute routes delete $routes --region europe-west2`
 		printf "$deleteroutes"
 	else
 		# De-registration failed, send an email notification
@@ -114,7 +115,6 @@ INSTANCES=`gcloud compute instances list --format='table(name,zone,networkInterf
 # Log another note of all the instances, to compare against before the script started
 printf "\nUpdated list of instances:\n" >> $logfile
 printf "$INSTANCES" >> $logfile
-printf "\n\n\n\n" >> $logfile
 
 
 # Wrap up
