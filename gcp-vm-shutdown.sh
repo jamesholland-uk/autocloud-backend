@@ -88,7 +88,7 @@ for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep
 		routes=$(gcloud -q compute routes list | grep $uid | grep route-to | awk '{print $1}')
 		# Then delete each route...
 		printf "\nGoing to delete $routes\n" >> $logfile
-		deleteroutes=`gcloud -q compute routes delete $routes --region europe-west2`
+		deleteroutes=`gcloud -q compute routes delete $routes`
 		printf "$deleteroutes"
 	else
 		# De-registration failed, send an email notification
