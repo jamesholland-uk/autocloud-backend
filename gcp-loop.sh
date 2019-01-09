@@ -25,7 +25,6 @@ set -- $results
 # Take first job
 uid=$1
 
-
 if [ "$uid" != "" ]
 	then
 	# There are jobs ready!
@@ -79,8 +78,8 @@ if [ "$uid" != "" ]
 
 	#read -n1 -r -p "Press any key to continue..." key
 
-    	# Send SMS
-	curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, starting your deployment now..." -d key=$SMS >> $logfile
+    # Send SMS
+	#curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, starting your deployment now..." -d key=$SMS >> $logfile
 	
 	#read -n1 -r -p "Press any key to continue..." key
 
@@ -206,7 +205,7 @@ if [ "$uid" != "" ]
 	#read -n1 -r -p "Press any key to continue..." key
 
 	# Send SMS
-    	curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, your deployment is done. Here's your firewall: $url Login with username user and password '"$USERPASS"'" -d key=$SMS >> $logfile
+    #curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, your deployment is done. Here's your firewall: $url Login with username user and password '"$USERPASS"'" -d key=$SMS >> $logfile
 	
 	# Send email
 	# GCP does not allow SMTP outbound on tcp/25, so using API-based email delivery
