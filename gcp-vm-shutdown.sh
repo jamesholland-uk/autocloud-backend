@@ -57,11 +57,11 @@ for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep
 	# Set firewall API key variable
 	FWKEY=LUFRPT1ldHZXYkk1aFJ0TnY1T09MR0pMWmR3TUtQQTQ9OVRHaEpLZW90Y2lkOHgyVFRuRmp0dCs3akZWRnNDa0h4QW5wZlh6cDdHRT0=
 	# Add CSP licencing API key
-	SET-LICENCE-API-KEY=`curl -k -X GET 'https://'$ip'/api/?type=op&cmd=<request><license><api-key><set><key>6a85f78e5cd9a7eccae9333361f3cbd798ee1e8c70bad9dfeb027f345e562d2d</key></set></api-key></license></request>&key='$FWKEY`
+	SETLICENCEAPIKEY=`curl -k -X GET 'https://'$ip'/api/?type=op&cmd=<request><license><api-key><set><key>6a85f78e5cd9a7eccae9333361f3cbd798ee1e8c70bad9dfeb027f345e562d2d</key></set></api-key></license></request>&key='$FWKEY`
 	# Deactive licences
-	DE-REGISTER=`curl -k -X GET 'https://'$ip'/api/?type=op&cmd=<request><license><deactivate><VM-Capacity><mode>auto</mode></VM-Capacity></deactivate></license></request>&key='$FWKEY`
+	DEREGISTER=`curl -k -X GET 'https://'$ip'/api/?type=op&cmd=<request><license><deactivate><VM-Capacity><mode>auto</mode></VM-Capacity></deactivate></license></request>&key='$FWKEY`
 	# Check if licence de-registration happened successfully
-	if [[ ${DE-REGISTER} == *"Successfully deactivated old keys"* ]];then
+	if [[ ${DEREGISTER} == *"Successfully deactivated old keys"* ]];then
     	# Seems it worked, so delete the instance
 		gcloud compute instances delete $vm
 	else
