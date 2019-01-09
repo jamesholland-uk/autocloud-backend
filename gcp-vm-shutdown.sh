@@ -35,7 +35,7 @@ done
 
 # Deregister firewalls
 for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep fw- | awk '{print $1}'`; do
-	printf "\nGoing to deregister $vm\n" >> $logfile
+	printf "\n\nGoing to deregister $vm\n" >> $logfile
 	# Start-up firewall
 	gcloud compute instances start $vm
 	# Get the mgmt IP address
@@ -50,10 +50,9 @@ for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep
 		printf "Waiting for firewall mgmt GUI page to be up...\n" >> $logfile
 		sleep 5s
 	done
-	sleep 5s
 	printf "Firewall is still booting, but web server component is up now - $(date)\n"
 	sleep 60s
-	printf "Waited 1 minutes, gonna try de-registering now..."
+	printf "Waited 1 minute, gonna try de-registering now..."
 	# Set firewall API key variable
 	FWKEY=LUFRPT1ldHZXYkk1aFJ0TnY1T09MR0pMWmR3TUtQQTQ9OVRHaEpLZW90Y2lkOHgyVFRuRmp0dCs3akZWRnNDa0h4QW5wZlh6cDdHRT0=
 	# Add CSP licencing API key
@@ -77,7 +76,7 @@ done
 for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep -E "kail-|linux-|db-" | awk '{print $1}'`; do
 	printf "\nGoing to delete $vm\n" >> $logfile
 	# ...and delete them
-	gcloud compute instances delete $vm
+	gcloud -q compute instances delete $vm
 done
 
 
