@@ -60,8 +60,10 @@ for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep
 	# Deactive licences
 	DEREGISTER=`curl -k -X GET 'https://'$ip'/api/?type=op&cmd=<request><license><deactivate><VM-Capacity><mode>auto</mode></VM-Capacity></deactivate></license></request>&key='$FWKEY`
 	# Check if licence de-registration happened successfully
+	printf "$DEREGISTER" >> $logfile
 	if [[ ${DEREGISTER} == *"Successfully deactivated old keys"* ]];then
     	# Seems it worked, so delete the instance
+		printf "\nGoing to delete $vm\n" >> $logfile
 		gcloud -q compute instances delete $vm
 
 		#
