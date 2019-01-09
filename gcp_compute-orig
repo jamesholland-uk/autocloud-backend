@@ -181,6 +181,7 @@ resource "google_compute_route" "database-route-to-inside-xxyyzz" {
 resource "google_compute_instance" "vm-series-xxyyzz" {
     count = 1
     name = "VM-FW1-xxyyzz"
+    tags = ["demo-created"]
     machine_type = "n1-standard-4"
     zone = "${var.gcp_zone}"
     can_ip_forward = true
@@ -239,6 +240,7 @@ resource "google_compute_instance" "vm-series-xxyyzz" {
 
 resource "google_compute_instance" "linux-xxyyzz" {
   name         = "LIN-VM1-xxyyzz"
+  tags = ["demo-created"]
   machine_type = "n1-standard-1"
   zone         = "${var.gcp_zone}"
 
@@ -279,6 +281,7 @@ resource "google_compute_instance" "linux-xxyyzz" {
 
 resource "google_compute_instance" "kali-xxyyzz" {
   name         = "KALI-VM1-xxyyzz"
+  tags = ["demo-created"]
   machine_type = "n1-standard-1"
   zone         = "${var.gcp_zone}"
 
@@ -318,6 +321,7 @@ resource "google_compute_instance" "kali-xxyyzz" {
 
 resource "google_compute_instance" "db-xxyyzz" {
   name         = "DB-VM1-xxyyzz"
+  tags = ["demo-created"]
   machine_type = "n1-standard-1"
   zone         = "${var.gcp_zone}"
 
