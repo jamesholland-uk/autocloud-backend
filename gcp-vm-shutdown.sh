@@ -74,11 +74,11 @@ done
 
 
 # Cycle through all NON-FIREWALL terminated instances... (these were shutdown manually, or automatically shut down 24 hours prior, by the above for-loop)
-#for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep -E "kail-|linux-|db-" | awk '{print $1}'`; do
-#	printf "\nGoing to delete $vm\n" >> $logfile
-#	# ...and delete them
-#	gcloud compute instances delete $vm
-#done
+for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep -E "kail-|linux-|db-" | awk '{print $1}'`; do
+	printf "\nGoing to delete $vm\n" >> $logfile
+	# ...and delete them
+	gcloud compute instances delete $vm
+done
 
 
 
