@@ -62,7 +62,14 @@ for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep
 	# Check if licence de-registration happened successfully
 	if [[ ${DEREGISTER} == *"Successfully deactivated old keys"* ]];then
     	# Seems it worked, so delete the instance
-		gcloud compute instances delete $vm
+		gcloud -q compute instances delete $vm
+
+		#
+		#
+		# THEN DELETE SUBNETWORKS AND ROUTES ETC
+		#
+		#
+
 	else
 		# De-registration failed, send an email notification
 		EMAILADDRESS=jholland@paloaltonetworks.com
