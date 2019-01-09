@@ -181,7 +181,6 @@ resource "google_compute_route" "database-route-to-inside-xxyyzz" {
 resource "google_compute_instance" "vm-series-xxyyzz" {
     count = 1
     name = "VM-FW1-xxyyzz"
-    tags = ["demo-created"]
     machine_type = "n1-standard-4"
     zone = "${var.gcp_zone}"
     can_ip_forward = true
@@ -191,6 +190,12 @@ resource "google_compute_instance" "vm-series-xxyyzz" {
         ssh-keys = "admin:${file("${var.gcp_ssh_key}")}"
         vmseries-bootstrap-gce-storagebucket = "bootstrap-bucket"
     }
+    
+    labels = {
+     "type" = "firewall"
+     "created-by" = "demo"
+    }
+  
     service_account {
         scopes = [
             "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
@@ -240,7 +245,6 @@ resource "google_compute_instance" "vm-series-xxyyzz" {
 
 resource "google_compute_instance" "linux-xxyyzz" {
   name         = "LIN-VM1-xxyyzz"
-  tags = ["demo-created"]
   machine_type = "n1-standard-1"
   zone         = "${var.gcp_zone}"
 
@@ -266,7 +270,10 @@ resource "google_compute_instance" "linux-xxyyzz" {
     
   metadata_startup_script = "wget https://raw.githubusercontent.com/jamesholland-uk/auto-hack-cloud/master/linuxserver-startup.sh \n chmod 755 linuxserver-startup.sh \n ./linuxserver-startup.sh xxyyzz"
 
-  labels = {"type" = "web"}
+  labels = {
+     "type" = "web"
+     "created-by" = "demo"
+  }
 
   service_account {
     scopes = ["userinfo-email", "compute-ro", "storage-ro"]
@@ -281,7 +288,6 @@ resource "google_compute_instance" "linux-xxyyzz" {
 
 resource "google_compute_instance" "kali-xxyyzz" {
   name         = "KALI-VM1-xxyyzz"
-  tags = ["demo-created"]
   machine_type = "n1-standard-1"
   zone         = "${var.gcp_zone}"
 
@@ -307,6 +313,11 @@ resource "google_compute_instance" "kali-xxyyzz" {
   
   metadata_startup_script = "curl https://raw.githubusercontent.com/jamesholland-uk/auto-hack-cloud/master/kali-startup.sh > kali-startup.sh \n chmod 755 kali-startup.sh \n ./kali-startup.sh xxyyzz"
 
+  labels = {
+     "type" = "kali"
+     "created-by" = "demo"
+  }
+  
   service_account {
     scopes = ["userinfo-email", "compute-ro", "storage-ro"]
   }
@@ -321,7 +332,6 @@ resource "google_compute_instance" "kali-xxyyzz" {
 
 resource "google_compute_instance" "db-xxyyzz" {
   name         = "DB-VM1-xxyyzz"
-  tags = ["demo-created"]
   machine_type = "n1-standard-1"
   zone         = "${var.gcp_zone}"
 
@@ -347,7 +357,10 @@ resource "google_compute_instance" "db-xxyyzz" {
   
   metadata_startup_script = "wget https://raw.githubusercontent.com/jamesholland-uk/auto-hack-cloud/master/databse-startup.sh \n chmod 755 database-startup.sh \n ./database-startup.sh xxyyzz"
 
-  labels = {"type" = "database"}
+  labels = {
+     "type" = "database"
+     "created-by" = "demo"
+  }
 
   service_account {
     scopes = ["userinfo-email", "compute-ro", "storage-ro"]
