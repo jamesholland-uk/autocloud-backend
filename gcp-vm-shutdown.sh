@@ -67,9 +67,7 @@ for vm in `printf "$INSTANCES" | grep TERMINATED | grep "created-by=demo" | grep
 	sleep 60s
 	
 	printf "Waited 1 minute, gonna try de-registering now..."
-	# Set firewall API key variable
-	FWKEY=LUFRPT1ldHZXYkk1aFJ0TnY1T09MR0pMWmR3TUtQQTQ9OVRHaEpLZW90Y2lkOHgyVFRuRmp0dCs3akZWRnNDa0h4QW5wZlh6cDdHRT0=
-	# Add CSP licencing API key
+		# Add CSP licencing API key
 	SETLICENCEAPIKEY=`curl -k -X GET 'https://'$ip'/api/?type=op&cmd=<request><license><api-key><set><key>6a85f78e5cd9a7eccae9333361f3cbd798ee1e8c70bad9dfeb027f345e562d2d</key></set></api-key></license></request>&key='$FWKEY`
 	# Deactive licences
 	DEREGISTER=`curl -k -X GET 'https://'$ip'/api/?type=op&cmd=<request><license><deactivate><VM-Capacity><mode>auto</mode></VM-Capacity></deactivate></license></request>&key='$FWKEY`

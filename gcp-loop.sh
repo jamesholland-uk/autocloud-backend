@@ -185,7 +185,7 @@ if [ "$uid" != "" ]
 	#read -n1 -r -p "Press any key to continue..." key
 	
 	# Get new firewall's XML key
-	xmlresp=$(curl -k -X GET 'https://'$ip'/api/?type=keygen&user=admin&password='$OURPASS)
+	xmlresp=$(curl -k -X GET 'https://'$ip'/api/?type=keygen&user=panadmin&password='$OURPASS)
 	fwkey=$(sed -ne '/key/{s/.*<key>\(.*\)<\/key>.*/\1/p;q;}' <<< "$xmlresp")
 	
 	# Get new firewall's serial number
@@ -237,7 +237,7 @@ if [ "$uid" != "" ]
 
 	# Commit to Panorama after VM-series has fully attached etc
 	sleep 120s
-	curl -k -X GET 'https://demomatic-rama-gcp.panw.co.uk/api/?type=commit&cmd=<commit><description>Post-bootstrap</description></commit>&key=LUFRPT1ldHZXYkk1aFJ0TnY1T09MR0pMWmR3TUtQQTQ9OVRHaEpLZW90Y2lkOHgyVFRuRmp0dCs3akZWRnNDa0h4QW5wZlh6cDdHRT0='
+	curl -k -X GET 'https://demomatic-rama-gcp.panw.co.uk/api/?type=commit&cmd=<commit><description>Post-bootstrap</description></commit>&key=$RAMAKEY'
 	
 else	
 	# There were no jobs ready, paus for 2 seconds before FOR loop kicks in again
