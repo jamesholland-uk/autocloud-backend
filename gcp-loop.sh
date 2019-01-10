@@ -133,7 +133,7 @@ if [ "$uid" != "" ]
 	deploytimedesc="$deployminutes minutes and $deployseconds seconds"
 
 	# Set job to bootstrapping
-    	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Bootstrapping' WHERE JOB = '$uid';")
+    $(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Bootstrapping' WHERE JOB = '$uid';")
 	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET DEPLOYTIME = '$deploytimedesc' WHERE JOB = '$uid';")
 
 	# Find the public mgmt IP after deployment, and create a URL to test if the VM-Series is up yet
@@ -185,14 +185,14 @@ if [ "$uid" != "" ]
 	#read -n1 -r -p "Press any key to continue..." key
 	
 	# Get new firewall's XML key
-	xmlresp=$(curl -k -X GET 'https://'$ip'/api/?type=keygen&user=panadmin&password='$OURPASS)
-	fwkey=$(sed -ne '/key/{s/.*<key>\(.*\)<\/key>.*/\1/p;q;}' <<< "$xmlresp")
+	#xmlresp=$(curl -k -X GET 'https://'$ip'/api/?type=keygen&user=panadmin&password='$OURPASS)
+	#fwkey=$(sed -ne '/key/{s/.*<key>\(.*\)<\/key>.*/\1/p;q;}' <<< "$xmlresp")
 	
 	# Get new firewall's serial number
-	sysinfo=$(curl -k -X GET 'https://'$ip'/api/?type=op&cmd=<show><system><info></info></system></show>&key='$fwkey)
-	serial=$(sed -ne '/serial/{s/.*<serial>\(.*\)<\/serial>.*/\1/p;q;}' <<< "$sysinfo")	
-	echo "fw-api-key: ${fwkey}" >> $logfile
-	echo "fw-serial: ${serial}" >> $logfile
+	#sysinfo=$(curl -k -X GET 'https://'$ip'/api/?type=op&cmd=<show><system><info></info></system></show>&key='$fwkey)
+	#serial=$(sed -ne '/serial/{s/.*<serial>\(.*\)<\/serial>.*/\1/p;q;}' <<< "$sysinfo")	
+	#echo "fw-api-key: ${fwkey}" >> $logfile
+	#echo "fw-serial: ${serial}" >> $logfile
 
 	# Stop the clock
 	finish=$(date)
@@ -236,8 +236,8 @@ if [ "$uid" != "" ]
 	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Done' WHERE JOB = '$uid';")
 
 	# Commit to Panorama after VM-series has fully attached etc
-	sleep 120s
-	curl -k -X GET 'https://demomatic-rama-gcp.panw.co.uk/api/?type=commit&cmd=<commit><description>Post-bootstrap</description></commit>&key=$RAMAKEY'
+	#sleep 120s
+	#curl -k -X GET 'https://demomatic-rama.panw.co.uk/api/?type=commit&cmd=<commit><description>Post-bootstrap</description></commit>&key=$RAMAKEY'
 	
 else	
 	# There were no jobs ready, paus for 2 seconds before FOR loop kicks in again
