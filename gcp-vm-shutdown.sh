@@ -1,5 +1,10 @@
 #!/bin/bash
 
+
+# Get to the right place
+cd autocloud-backend
+
+
 # Get creds
 source creds.txt
 
