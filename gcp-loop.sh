@@ -32,7 +32,7 @@ if [ "$uid" != "" ]
 
 	# Start the clock
 	start=$(date)
-    lstart=$(date +%s)
+    	lstart=$(date +%s)
 	
 	# Set job to deploying status
 	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Deploying' WHERE JOB = '$uid';")
@@ -78,8 +78,8 @@ if [ "$uid" != "" ]
 
 	#read -n1 -r -p "Press any key to continue..." key
 
-    # Send SMS
-	#curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, starting your deployment now..." -d key=$SMS >> $logfile
+    	# Send SMS
+	curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, starting your deployment now..." -d key=$SMS >> $logfile
 	
 	#read -n1 -r -p "Press any key to continue..." key
 
@@ -133,7 +133,7 @@ if [ "$uid" != "" ]
 	deploytimedesc="$deployminutes minutes and $deployseconds seconds"
 
 	# Set job to bootstrapping
-    $(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Bootstrapping' WHERE JOB = '$uid';")
+    	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Bootstrapping' WHERE JOB = '$uid';")
 	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET DEPLOYTIME = '$deploytimedesc' WHERE JOB = '$uid';")
 
 	# Find the public mgmt IP after deployment, and create a URL to test if the VM-Series is up yet
@@ -205,7 +205,7 @@ if [ "$uid" != "" ]
 	#read -n1 -r -p "Press any key to continue..." key
 
 	# Send SMS
-    #curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, your deployment is done. Here's your firewall: $url Login with username user and password '"$USERPASS"'" -d key=$SMS >> $logfile
+    	curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, your deployment is done. Here's your firewall: $url Login with username user and password '"$USERPASS"'" -d key=$SMS >> $logfile
 	
 	# Send email
 	# GCP does not allow SMTP outbound on tcp/25, so using API-based email delivery
