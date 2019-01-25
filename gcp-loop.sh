@@ -133,7 +133,7 @@ if [ "$uid" != "" ]
 	deploytimedesc="$deployminutes minutes and $deployseconds seconds"
 
 	# Set job to bootstrapping
-    	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Bootstrapping' WHERE JOB = '$uid';")
+    $(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Bootstrapping' WHERE JOB = '$uid';")
 	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET DEPLOYTIME = '$deploytimedesc' WHERE JOB = '$uid';")
 
 	# Find the public mgmt IP after deployment, and create a URL to test if the VM-Series is up yet
@@ -164,11 +164,11 @@ if [ "$uid" != "" ]
 	#read -n1 -r -p "Press any key to continue..." key
 
 	# Timers
-    	lboot=$(date +%s)
-    	boottime=$((lboot - ldeployed))
-    	bootminutes=$((boottime / 60))
-    	bootseconds=$((boottime % 60))
-    	bootdesc="$bootminutes minutes and $bootseconds seconds"
+	lboot=$(date +%s)
+	boottime=$((lboot - ldeployed))
+	bootminutes=$((boottime / 60))
+	bootseconds=$((boottime % 60))
+	bootdesc="$bootminutes minutes and $bootseconds seconds"
 
 	# Set job to configuring
 	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Configuring' WHERE JOB = '$uid';")
@@ -205,11 +205,12 @@ if [ "$uid" != "" ]
 	#read -n1 -r -p "Press any key to continue..." key
 
 	# Send SMS
-    	curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, your deployment is done. Here's your firewall: $url Login with username user and password '"$USERPASS"'" -d key=$SMS >> $logfile
+    curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, your deployment is done. Here's your firewall: $url Login with username user and password '"$USERPASS"'" -d key=$SMS >> $logfile
 	
 	# Send email
-	# GCP does not allow SMTP outbound on tcp/25, so using API-based email delivery
-	message_txt=$'Hi '"$nickname"',  Thanks for using the cloud automation demo. Your firewall was deployed to '"$url"' Login with username user and password '"$USERPASS"'     Kind regards, Palo Alto Networks      (Please contact '"$se"' for more information)'
+	#message_txt=$'Hi '"$nickname"',  Thanks for using the cloud automation demo. Your firewall was deployed to '"$url"' Login with username user and password '"$USERPASS"'     Kind regards, Palo Alto Networks      (Please contact '"$se"' for more information)'
+	demourl="http://autocloud.panw.co.uk/autocloud-frontend/status.php?uid="$uid
+	message_txt=$'Hi '"$nickname"',<br><br>Thanks for using the cloud automation demo. Your firewall was deployed to '"$url"' Login with username user and password '"$USERPASS"'<br>The demo website can be accessed at '"$demourl"'<br><br>Kind regards,<br>Palo Alto Networks<br><br>(Please contact '"$se"' for more information)'
 	curl -s --user 'api:'"$MAILGUN"'' https://api.mailgun.net/v3/demo.panw.co.uk/messages -F from='Palo Alto Networks <demo@demo.panw.co.uk>' -F to=$email -F subject='Cloud Automation Demo - Palo Alto Networks' -F html=' '"$message_txt"' '
 	curl -s --user 'api:'"$MAILGUN"'' https://api.mailgun.net/v3/demo.panw.co.uk/messages -F from='Palo Alto Networks <demo@demo.panw.co.uk>' -F to=jholland@paloaltonetworks.com -F subject='GCP HackLab Cloud Automation Demo Used by Someone!!!' -F html=' '"$message_txt"' '
 	
