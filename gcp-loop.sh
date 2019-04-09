@@ -17,7 +17,7 @@ for number in {1..28}
 do
 
 # Query databse for jobs which are ready
-results=$(mysql -N -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "SELECT JOB FROM jobs WHERE STATUS = 'Ready';") >> $logfile
+results=$(mysql -N -u $DBUSER -p$OURPASS -D gcp-autocloud -e "SELECT JOB FROM jobs WHERE STATUS = 'Ready';") >> $logfile
 
 # Make jobs list from database the stdin
 set -- $results
@@ -35,16 +35,16 @@ if [ "$uid" != "" ]
     	lstart=$(date +%s)
 	
 	# Set job to deploying status
-	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Deploying' WHERE JOB = '$uid';")
+	$(mysql -u $DBUSER -p$OURPASS -D gcp-autocloud -e "UPDATE jobs SET STATUS = 'Deploying' WHERE JOB = '$uid';")
 
 	# Get job attributes
-	resgrp=$(mysql -N -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "SELECT RESGRP FROM jobs WHERE JOB = '$uid';") >> $logfile
-	message=$(mysql -N -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "SELECT MESSAGE FROM jobs WHERE JOB = '$uid';") >> $logfile
-	phone=$(mysql -N -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "SELECT PHONE FROM jobs WHERE JOB = '$uid';") >> $logfile
-	email=$(mysql -N -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "SELECT EMAIL FROM jobs WHERE JOB = '$uid';") >> $logfile
-	nickname=$(mysql -N -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "SELECT NICKNAME FROM jobs WHERE JOB = '$uid';") >> $logfile
-	se=$(mysql -N -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "SELECT SE FROM jobs WHERE JOB = '$uid';") >> $logfile
-	subnet=$(mysql -N -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "SELECT ID FROM subnetid WHERE NAME = 'here';") >> $logfile
+	resgrp=$(mysql -N -u $DBUSER -p$OURPASS -D gcp-autocloud -e "SELECT RESGRP FROM jobs WHERE JOB = '$uid';") >> $logfile
+	message=$(mysql -N -u $DBUSER -p$OURPASS -D gcp-autocloud -e "SELECT MESSAGE FROM jobs WHERE JOB = '$uid';") >> $logfile
+	phone=$(mysql -N -u $DBUSER -p$OURPASS -D gcp-autocloud -e "SELECT PHONE FROM jobs WHERE JOB = '$uid';") >> $logfile
+	email=$(mysql -N -u $DBUSER -p$OURPASS -D gcp-autocloud -e "SELECT EMAIL FROM jobs WHERE JOB = '$uid';") >> $logfile
+	nickname=$(mysql -N -u $DBUSER -p$OURPASS -D gcp-autocloud -e "SELECT NICKNAME FROM jobs WHERE JOB = '$uid';") >> $logfile
+	se=$(mysql -N -u $DBUSER -p$OURPASS -D gcp-autocloud -e "SELECT SE FROM jobs WHERE JOB = '$uid';") >> $logfile
+	subnet=$(mysql -N -u $DBUSER -p$OURPASS -D gcp-autocloud -e "SELECT ID FROM subnetid WHERE NAME = 'here';") >> $logfile
 	
 	#read -n1 -r -p "Press any key to continue..." key
 
@@ -59,7 +59,7 @@ if [ "$uid" != "" ]
 	#read -n1 -r -p "Press any key to continue..." key
 
 	# Write back the next subnet to the database
-	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE subnetid SET ID = '$newsubnet' WHERE NAME = 'here';") >> $logfile
+	$(mysql -u $DBUSER -p$OURPASS -D gcp-autocloud -e "UPDATE subnetid SET ID = '$newsubnet' WHERE NAME = 'here';") >> $logfile
 
 	#read -n1 -r -p "Press any key to continue..." key
 
@@ -135,8 +135,8 @@ if [ "$uid" != "" ]
 	deploytimedesc="$deployminutes minutes and $deployseconds seconds"
 
 	# Set job to bootstrapping
-    $(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Bootstrapping' WHERE JOB = '$uid';")
-	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET DEPLOYTIME = '$deploytimedesc' WHERE JOB = '$uid';")
+    $(mysql -u $DBUSER -p$OURPASS -D gcp-autocloud -e "UPDATE jobs SET STATUS = 'Bootstrapping' WHERE JOB = '$uid';")
+	$(mysql -u $DBUSER -p$OURPASS -D gcp-autocloud -e "UPDATE jobs SET DEPLOYTIME = '$deploytimedesc' WHERE JOB = '$uid';")
 
 	# Find the public mgmt IP after deployment, and create a URL to test if the VM-Series is up yet
 	#ip=`az network public-ip list --resource-group $resgrp | grep ipAddress | head -1 | awk '{match($0,/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/); ip = substr($0,RSTART,RLENGTH); print ip}'`
@@ -151,9 +151,9 @@ if [ "$uid" != "" ]
 	echo "kali: ${kaliip}" >> $logfile
 	
 	# Add IPs to database
-	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET MGMTIP = '$ip' WHERE JOB = '$uid';")
-	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET UNTRUSTIP = '$untrustip' WHERE JOB = '$uid';")
-	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET KALIIP = '$kaliip' WHERE JOB = '$uid';")
+	$(mysql -u $DBUSER -p$OURPASS -D gcp-autocloud -e "UPDATE jobs SET MGMTIP = '$ip' WHERE JOB = '$uid';")
+	$(mysql -u $DBUSER -p$OURPASS -D gcp-autocloud -e "UPDATE jobs SET UNTRUSTIP = '$untrustip' WHERE JOB = '$uid';")
+	$(mysql -u $DBUSER -p$OURPASS -D gcp-autocloud -e "UPDATE jobs SET KALIIP = '$kaliip' WHERE JOB = '$uid';")
 	
 	# Wait for VM-Series to be up (i.e. HTTP code not 000) before opening browser
 	url="https://"$ip
@@ -173,8 +173,8 @@ if [ "$uid" != "" ]
 	bootdesc="$bootminutes minutes and $bootseconds seconds"
 
 	# Set job to configuring
-	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Configuring' WHERE JOB = '$uid';")
-	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET BOOTTIME = '$bootdesc' WHERE JOB = '$uid';")
+	$(mysql -u $DBUSER -p$OURPASS -D gcp-autocloud -e "UPDATE jobs SET STATUS = 'Configuring' WHERE JOB = '$uid';")
+	$(mysql -u $DBUSER -p$OURPASS -D gcp-autocloud -e "UPDATE jobs SET BOOTTIME = '$bootdesc' WHERE JOB = '$uid';")
 
 	# Using BYOL means adding a licence auth code to the bootstrap folder, which incurs a reboot, so add wait time for this, and re-do the check for the firewall to be up
 	sleep 120s
@@ -227,16 +227,16 @@ if [ "$uid" != "" ]
 	else
 		donedesc="$doneminutes minutes and $doneseconds seconds"	
 	fi
-	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET DONETIME = '$donedesc' WHERE JOB = '$uid';")
+	$(mysql -u $DBUSER -p$OURPASS -D gcp-autocloud -e "UPDATE jobs SET DONETIME = '$donedesc' WHERE JOB = '$uid';")
 
 	totaltime=$((ldone - lstart))
     	totalminutes=$((totaltime / 60))
     	totalseconds=$((totaltime % 60))
     	totaldesc="$totalminutes minutes and $totalseconds seconds"
-	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET TOTALTIME = '$totaldesc' WHERE JOB = '$uid';")
+	$(mysql -u $DBUSER -p$OURPASS -D gcp-autocloud -e "UPDATE jobs SET TOTALTIME = '$totaldesc' WHERE JOB = '$uid';")
 
 	# Set job to done
-	$(mysql -u $DBUSER -p$OURPASS -D auto-hack-cloud -e "UPDATE jobs SET STATUS = 'Done' WHERE JOB = '$uid';")
+	$(mysql -u $DBUSER -p$OURPASS -D gcp-autocloud -e "UPDATE jobs SET STATUS = 'Done' WHERE JOB = '$uid';")
 
 	# Commit to Panorama after VM-series has fully attached etc
 	#sleep 120s
