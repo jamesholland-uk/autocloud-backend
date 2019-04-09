@@ -32,13 +32,13 @@ variable "gcp_zone" {
 variable "gcp_credentials_file" {
   description = "Full path to the JSON credentials file"
   type = "string"
-  default = "gcp_compute_key_svc_auto-hack-cloud.json"
+  default = "../gcp_compute_key_svc_auto-hack-cloud.json"
 }
 
 variable "gcp_ssh_key" {
     description = "Full path to the SSH public key file"
     type = "string"
-    default = "id_rsa.pub"
+    default = "../id_rsa.pub"
 }
 
 /*
