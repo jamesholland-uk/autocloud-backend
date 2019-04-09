@@ -177,12 +177,12 @@ if [ "$uid" != "" ]
 	$(mysql -u $DBUSER -p$OURPASS -D gcp-autocloud -e "UPDATE jobs SET BOOTTIME = '$bootdesc' WHERE JOB = '$uid';")
 
 	# Using BYOL means adding a licence auth code to the bootstrap folder, which incurs a reboot, so add wait time for this, and re-do the check for the firewall to be up
-	sleep 120s
-	while [ `curl --write-out "%{http_code}\n" -m 2 -k --silent --output /dev/null $url` -eq 000 ]
-	do
-		echo "Waiting for firewall mgmt GUI page to be up again after reboot incurred when applying auth code..."
-		sleep 5s
-	done
+	#sleep 120s
+	#while [ `curl --write-out "%{http_code}\n" -m 2 -k --silent --output /dev/null $url` -eq 000 ]
+	#do
+	#	echo "Waiting for firewall mgmt GUI page to be up again after reboot incurred when applying auth code..."
+	#	sleep 5s
+	#done
 
 	#read -n1 -r -p "Press any key to continue..." key
 	
