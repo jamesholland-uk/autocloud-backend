@@ -79,7 +79,7 @@ if [ "$uid" != "" ]
 	#read -n1 -r -p "Press any key to continue..." key
 
     # Send SMS
-	curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, starting your deployment now..." -d key=$SMS >> $logfile
+	#curl -X POST https://textbelt.com/text --data-urlencode phone=$phone --data-urlencode message="Hi $nickname, starting your deployment now..." -d key=$SMS >> $logfile
 	# Send admin email
 	curl -s --user 'api:'"$MAILGUN"'' https://api.mailgun.net/v3/demo.panw.co.uk/messages -F from='Palo Alto Networks <demo@demo.panw.co.uk>' -F to=jholland@paloaltonetworks.com -F subject='GCP HackLab Cloud Automation Demo Used by Someone - Started' -F html=' '"$message_txt"' '
 
@@ -106,7 +106,7 @@ if [ "$uid" != "" ]
 	sed -i "s/xxyyzz/$subnet/g" gcp_outputs.tf >> $logfile
 
 	# Auth to GCP, set runtime variables
-	gcloud auth activate-service-account --key-file=../gcp_compute_key_svc_auto-hack-cloud.json
+	gcloud auth activate-service-account --key-file=gcp_compute_key_svc_auto-hack-cloud.json
 	gcloud config set project auto-hack-cloud
 
 	# Upload bootstrap.xml and init-gfc bootstrap files - will overwrite already present file(s)
