@@ -3,6 +3,9 @@
 # Capture all CLI output
 #exec &> deploy-log.txt
 
+# Move to local directory
+cd "${0%/*}"
+
 # Initiate log file
 logfile="deploy-log.txt"
 
